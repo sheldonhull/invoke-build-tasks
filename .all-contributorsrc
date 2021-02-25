@@ -1,0 +1,24 @@
+{
+  "projectName": "invoke-build-tasks",
+  "projectOwner": "sheldonhull",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "gitmoji",
+  "contributors": [
+    {
+      "login": "sheldonhull",
+      "name": "sheldonhull",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3526320?v=4",
+      "profile": "https://www.sheldonhull.com/",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7
+}

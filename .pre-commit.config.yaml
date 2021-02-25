@@ -1,0 +1,50 @@
+# Setup: pre-commit install
+# Upgrade: pre-commut autoupgrade
+# Run: pre-commit run --all-files
+# https://pre-commit.com/hooks.html
+default_language_version:
+  # force all unspecified python hooks to run python3
+  python: python3
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.4.0 # Use the ref you want to point at
+    hooks:
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: check-byte-order-marker
+      - id: check-case-conflict
+      - id: detect-aws-credentials
+        args: [--allow-missing-credentials]
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: pretty-format-json
+      - id: check-yaml
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: fix-byte-order-marker
+
+  # https://pre-commit.com/#supported-languages
+  - repo: local
+    hooks:
+      # FIRST TIME SETUP:  GO111MODULE=on go get github.com/zricethezav/gitleaks/v4@latest
+      - id: local-run
+        name: Scan for secrets
+        entry: gitleaks --pretty -v
+        language: system
+        #entry: bash -c gitleaks
+        #entry: docker run --rm -v ${pwd}:/code/ zricethezav/gitleaks -v --repo-path=/code/gitleaks
+        # docker_image: zricethezav/gitleaks:latest
+        # language: docker_image
+        # entry: zricethezav/gitleaks:latest -v
+ # curl --silent  https://raw.githubusercontent.com/thoughtworks/talisman/master/global_install_scripts/install.bash > /tmp/install_talisman.bash && /bin/bash /tmp/install_talisman.bash
+ # &/Users/$(whoami)/.talisman/bin/talisman_darwin_amd64 --scanWithHtml
+ # cd talisman_html_report && python -m SimpleHTTPServer 3000
+  - repo: local
+    hooks:
+      - id: talisman-precommit
+        name: talisman
+        entry: bash -c 'if [ -n "${TALISMAN_HOME:-}" ]; then ${TALISMAN_HOME}/talisman_hook_script pre-commit; else echo "TALISMAN does not exist. Consider installing from https://github.com/thoughtworks/talisman . If you already have talisman installed, please ensure TALISMAN_HOME variable is set to where talisman_hook_script resides, for example, TALISMAN_HOME=${HOME}/.talisman/bin"; fi'
+        language: system
+        pass_filenames: false
+        types: [text]
+        verbose: false
