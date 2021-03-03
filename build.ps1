@@ -7,8 +7,10 @@
 
 [cmdletbinding()]
 param(
+    [Alias('Task')]
     [string[]]$Tasks = '.'
-    , [switch]$LoadConstants
+
+    ,[switch]$LoadConstants
     , $File
     , $Configuration
 

@@ -9,6 +9,8 @@
 [cmdletbinding()]
 param(
     $BuildRoot = $BuildRoot,
+
+    [Alias('Task')]
     $Tasks,
     [switch]$LoadConstants,
     $Configuration

@@ -1,7 +1,7 @@
 # See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.158.0/containers/codespaces-linux/.devcontainer/base.Dockerfile
 FROM homebrew/brew:latest AS DOCKERBREW
 FROM mcr.microsoft.com/vscode/devcontainers/universal:1-focal AS BASE
-
+ARG USERNAME="codespace"
 # ** [Optional] Uncomment this section to install additional packages. **
 # USER root
 #
@@ -16,8 +16,19 @@ RUN useradd -m -s /bin/bash linuxbrew && \
 USER linuxbrew
 COPY --from=DOCKERBREW /home/linuxbrew/.linuxbrew /home/linuxbrew/.linuxbrew
 
-USER codespace
+USER $USERNAME
 ENV PATH="/home/linuxbrew/.linuxbrew/bin:${PATH}"
 RUN echo "Verifying brew installed" && brew --version
-RUN curl -s "https://raw.githubusercontent.com/owenrumney/squealer/main/scripts/install.sh" | bash
-ENV SHELL=/opt/microsoft/powershell/7/pwsh
+
+RUN sudo sh -c "$(curl -ssL https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
+
+RUN mkdir -p /home/$USERNAME/.vscode-server/extensions \
+        /home/$USERNAME/.vscode-server/extensions \
+    && chown -R $USERNAME \
+        /home/$USERNAME/.vscode-server \
+        /home/$USERNAME/.vscode-server
+RUN sudo sh -c "$(curl -ssL https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
+ENV PATH="/home/linuxbrew/.linuxbrew/bin:${PATH}"
+#ENV SHELL=/opt/microsoft/powershell/7/pwsh
+# needs github token
+#RUN curl -s "https://raw.githubusercontent.com/owenrumney/squealer/main/scripts/install.sh" | bash
