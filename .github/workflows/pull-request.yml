@@ -1,0 +1,66 @@
+name: 'Run Pull Request Update Checks'
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - edited
+      - synchronize
+
+defaults:
+  run:
+    shell: pwsh
+    working-directory: .
+jobs:
+  github-pr:
+    name: Linting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: aslafy-z/conventional-pr-title-action@master
+        name:  'Validate Title Adheres to Conventional Commit Format'
+        with:
+          success-state: Title follows the specification.
+          failure-state: Title does not follow the specification.
+          context-name: conventional-pr-title
+          preset: conventional-changelog-angular@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  run-linting:
+    name: 'Apply FMT & Scan For Secrets'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # don't use shallow fetch as I'm trying to commit and push back up changed files to the main
+          # token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Super-Linter
+        uses: github/super-linter@v3
+        env:
+          VALIDATE_ALL_CODEBASE: false #check only the changed files
+          VALIDATE_POWERSHELL: true
+          #VALIDATE_MARKDOWN: true
+          VALIDATE_SHELL_SHFMT: true
+          VALIDATE_TERRAFORM: true
+          VALIDATE_TERRAFORM_TERRASCAN: true
+          VALIDATE_YAML: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FILTER_REGEX_EXCLUDE: (.*Install-RequiredModules.tasks.ps1)|(.*ConvertTo-MarkdownTable.ps1)|(.*ParseExtraParameters.ps1)
+        continue-on-error: true
+      - name: Format Code
+        shell: pwsh
+        run: '& (Join-Path $ENV:GITHUB_WORKSPACE "build.ps1") -Task "tidy","git-commit-push"'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: git status
+        run: git status
+      - name: Git Auto Commit
+        uses: stefanzweifel/git-auto-commit-action@v4.7.1
+        with:
+          commit_message: "chore: github action cleanup"
+      - name: gitleaks-action
+        uses: zricethezav/gitleaks-action@master
+      - name: FIXME alert
+        uses: bbugh/action-fixme-check@v1.0.0
+      - uses: codespell-project/codespell-problem-matcher@v1
+      # - uses: xt0rted/markdownlint-problem-matcher@v1
+      #   run: markdownlint **/*.md --ignore node_modules
