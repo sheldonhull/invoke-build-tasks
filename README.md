@@ -26,7 +26,22 @@ It's also relatively easy to quickly extend once you work through understanding 
 
 Long term I probably will explore more, but for now this provides a rapid productivity gain in a project to improve local development workflow.
 
+Add this to your `$PROFILE` file: `New-Alias ib 'invoke-build' -force` and then you can benefit from quickly running commands such as:
 
+Format your code across multiple languages.
+
+```powershell
+ib tidy
+```
+
+Example worklow that might be created:
+
+```powershell
+ib clean, build, s3-upload-directory, notify-slack
+```
+
+In addition to easy commands from the terminal, this project uses the VSCode integration so you can have all the tasks show up as VSCode tasks.
+If you leverage Task Explorer Extension, you can just hit the run button as well and trigger activities from there.
 ## Show your support
 
 Give a ⭐️ if this project helped you!
