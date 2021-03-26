@@ -23,7 +23,7 @@ foreach ($file in (Get-ChildItem -Path (Join-Path $BuildRoot 'build/tasks') -Fil
 if ([System.IO.Path]::GetFileName($MyInvocation.ScriptName) -ne 'Invoke-Build.ps1')
 {
     $ErrorActionPreference = 'Stop'
-    if (!(Get-Module InvokeBuild -ListAvailable))
+    if (!(Get-InstalledModule InvokeBuild -ErrorAction SilentlyContinue))
     {
         Install-Module InvokeBuild
         'Installed and imported InvokeBuild as was not available'

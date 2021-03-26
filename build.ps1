@@ -19,7 +19,7 @@ param(
 $DependentModules = @('InvokeBuild', 'PSGitHub', 'NameIt') # add pester when pester tests are added
 Foreach ($Module in $DependentModules)
 {
-    If (-not (Get-InstalledModule $module -ListAvailable -ErrorAction SilentlyContinue))
+    If (-not (Get-InstalledModule $module -ErrorAction SilentlyContinue))
     {
         Install-Module -Name $Module -Scope CurrentUser -Force -Confirm:$false
     }

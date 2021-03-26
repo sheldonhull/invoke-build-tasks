@@ -15,7 +15,8 @@ task check_powershell_configuration {
     #----------------------------------------------------------------------------#
     #                     Up to Date PowershellGet Installed                     #
     #----------------------------------------------------------------------------#
-    $InstalledPowershellGet = Get-Module PowershellGet -ListAvailable | Sort-Object Version | Select-Object -First 1
+    $InstalledPowershellGet = Get-InstalledModule PowershellGet -ErrorAction SilentlyContinue | Sort-Object Version | Select-Object -First 1
+
     if (-not $WhatIf ) #$PSCmdlet.ShouldProcess("Install-Module PowershellGet -Force -Scope AllUsers -AllowClobber")
     {
         if ($InstalledPowershelLGet.Version -lt [Version]::New(2, 2, 3))

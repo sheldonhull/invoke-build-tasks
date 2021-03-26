@@ -1,7 +1,7 @@
 #Synopsis: Bootstrap all the required dependencies
 check check-powershell-modules {
     Write-Build Gray 'Running Invoke-PSDepend'
-    if (@(Get-Module PSDepend -ListAvailable).count -eq 0)
+    if (-not (Get-InstalledModule PSDepend -ListAvailable -ErrorAction SilentlyContinue))
     {
         Write-Build Gray 'Installing PSDepend'
         Install-Module PSDepend -Scope CurrentUser -Force -AllowClobber -Confirm:$false
