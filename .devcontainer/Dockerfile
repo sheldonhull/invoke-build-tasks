@@ -1,6 +1,6 @@
 # See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.158.0/containers/codespaces-linux/.devcontainer/base.Dockerfile
 FROM homebrew/brew:latest AS DOCKERBREW
-FROM mcr.microsoft.com/vscode/devcontainers/universal:1-focal AS BASE
+FROM mcr.microsoft.com/vscode/devcontainers/universal:2-focal AS BASE
 ARG USERNAME="codespace"
 # ** [Optional] Uncomment this section to install additional packages. **
 # USER root
