@@ -16,11 +16,9 @@ param(
 )
 ($File) ? ( Join-Path $PSScriptRoot 'tasks.build.ps1') : (Write-Verbose "Task File Override: '$File'")
 
-$DependentModules = @('InvokeBuild', 'PSGitHub', 'NameIt') # add pester when pester tests are added
-Foreach ($Module in $DependentModules)
-{
-    If (-not (Get-InstalledModule $module -ErrorAction SilentlyContinue))
-    {
+$DependentModules = @('InvokeBuild', 'NameIt') # add pester when pester tests are added
+Foreach ($Module in $DependentModules) {
+    If (-not (Get-InstalledModule $module -ErrorAction SilentlyContinue)) {
         Install-Module -Name $Module -Scope CurrentUser -Force -Confirm:$false
     }
     Import-Module $module -ErrorAction Stop -Force
@@ -38,8 +36,8 @@ Invoke-Build -File $File -Result Result -Task $Tasks -LoadConstants:$LoadConstan
 
 # Show invoked tasks ordered by Elapsed with ScriptName included
 $Result.Tasks |
-    Sort-Object Elapsed |
-    Format-Table -AutoSize Elapsed, @{
-        Name       = 'Task'
-        Expression = { $_.Name + ' @ ' + $_.InvocationInfo.ScriptName }
-    }
+Sort-Object Elapsed |
+Format-Table -AutoSize Elapsed, @{
+    Name       = 'Task'
+    Expression = { $_.Name + ' @ ' + $_.InvocationInfo.ScriptName }
+}

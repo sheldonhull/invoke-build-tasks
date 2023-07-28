@@ -20,11 +20,9 @@ foreach ($file in (Get-ChildItem -Path (Join-Path $BuildRoot 'build/functions') 
 foreach ($file in (Get-ChildItem -Path (Join-Path $BuildRoot 'build/tasks') -Filter '*.tasks.ps1' -Recurse).FullName) { . $file }
 
 # Can handle both windows and mac if powershell core is setup on mac
-if ([System.IO.Path]::GetFileName($MyInvocation.ScriptName) -ne 'Invoke-Build.ps1')
-{
+if ([System.IO.Path]::GetFileName($MyInvocation.ScriptName) -ne 'Invoke-Build.ps1') {
     $ErrorActionPreference = 'Stop'
-    if (!(Get-InstalledModule InvokeBuild -ErrorAction SilentlyContinue))
-    {
+    if (!(Get-InstalledModule InvokeBuild -ErrorAction SilentlyContinue)) {
         Install-Module InvokeBuild
         'Installed and imported InvokeBuild as was not available'
     }
@@ -41,23 +39,33 @@ if ([System.IO.Path]::GetFileName($MyInvocation.ScriptName) -ne 'Invoke-Build.ps
 ###################################
 
 Enter-Build {
-    $ProjectDirectory = $BuildRoot | Split-Path -Leaf
-    $script:ArtifactDirectory = Join-Path $BuildRoot 'artifacts'
-    $null = New-Item (Join-Path $BuildRoot 'artifacts' ) -ItemType Directory -Force -ErrorAction SilentlyContinue
-    if ($LoadConstants)
-    {
-        $ConstantsFile = (Join-Path "${ENV:HOME}${ENV:USERPROFILE}" ".invokebuild/$ProjectDirectory.constants.ps1")
-        if (Test-Path $ConstantsFile)
-        {
-            . $ConstantsFile
-            Write-Build DarkYellow "Loaded: $ConstantsFile"
-        }
-        else
-        {
-            New-Item $ConstantsFile -ItemType File -Force
-            Write-Build DarkYellow "Created Constants file $ConstantsFile"
-        }
-    }
+    # $ProjectDirectory = $BuildRoot | Split-Path -Leaf
+    $script:ArtifactDirectory = Join-Path $BuildRoot '.artifacts'
+    $null = New-Item (Join-Path $BuildRoot '.artifacts' ) -ItemType Directory -Force -ErrorAction SilentlyContinue
+    ## TODO: Reevaluate this approach to use something like like direnv, but in a cross-platform way, if possible. Not happy with this
+    # if ($PSVersionTable.PSVersion.Major -eq 5) {
+    #     $HOME = $env:USERPROFILE
+    # }
+
+    # if ($LoadConstants) {
+    #     $ENV:XDG_CONFIG_HOME = $ENV:XDG_CONFIG_HOME ? $ENV:XDG_CONFIG_HOME : (Join-Path $HOME '.config')
+    #     $ENV:XDG_CACHE_HOME = $ENV:XDG_CACHE_HOME ? $ENV:XDG_CACHE_HOME : (Join-Path $HOME '.cache')
+    #     $ENV:XDG_DATA_HOME = $ENV:XDG_DATA_HOME ? $ENV:XDG_DATA_HOME : ($HOME, '.local', 'share' -join [IO.Path]::DirectorySeparatorChar)
+
+    #     if (-not (Test-Path (Join-Path $ENV:XDG_CONFIG_HOME '.invokebuild')) ) {
+    #         New-Item (Join-Path $ENV:XDG_CONFIG_HOME '.invokebuild') -ItemType Directory -Force -ErrorAction SilentlyContinue
+    #         Write-Build DarkGray "Created: $(Join-Path $ENV:XDG_CONFIG_HOME '.invokebuild') for storing local overrides"
+    #     }
+    #     $ConstantsFile = Join-Path $ENV:XDG_CONFIG_HOME ".invokebuild/$ProjectDirectory.constants.ps1"
+    #     if (Test-Path $ConstantsFile) {
+    #         . $ConstantsFile
+    #         Write-Build DarkYellow "Loaded: $ConstantsFile"
+    #     }
+    #     else {
+    #         New-Item $ConstantsFile -ItemType File -Force
+    #         Write-Build DarkYellow "Created Constants file $ConstantsFile"
+    #     }
+    # }
 }
 
 ####################################
