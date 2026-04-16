@@ -34,7 +34,7 @@ jobs:
           fetch-depth: 0 # don't use shallow fetch as I'm trying to commit and push back up changed files to the main
           # token: ${{ secrets.GITHUB_TOKEN }}
       - name: Super-Linter
-        uses: github/super-linter@v4
+        uses: github/super-linter@v5
         env:
           VALIDATE_ALL_CODEBASE: false #check only the changed files
           VALIDATE_POWERSHELL: true
